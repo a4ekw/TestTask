@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -74,19 +73,25 @@ namespace Client
                 label.Visibility = Visibility.Visible;
                 label.Content = "HTTP error.";
             }
-
+            deleteButton.IsEnabled = false;
+            updateButton.IsEnabled = false;
             listView.ItemsSource = list;
         }
+
         private void listView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            if (listView.SelectedItems.Count == 0)
+            {
+                deleteButton.IsEnabled = false;
+                updateButton.IsEnabled = false;
+            }
+            else
+            {
+                deleteButton.IsEnabled = true;
+                updateButton.IsEnabled = true;
+            }
             if (listView.SelectedItems.Count > 1)
                 updateButton.IsEnabled = false;
-            else
-                updateButton.IsEnabled = true;
-            if (listView.SelectedItems.Count == 0)
-                deleteButton.IsEnabled = false;
-            else
-                deleteButton.IsEnabled = true;
         }
 
         private void addButton_Click(object sender, RoutedEventArgs e)
@@ -164,7 +169,7 @@ namespace Client
         }
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
-                int i = 1;
+            int i = 1;
             foreach (Card card in listView.SelectedItems)
             {
                 using (var client = new HttpClient())
